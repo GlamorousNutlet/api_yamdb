@@ -8,6 +8,7 @@ from . import views
 
 urlpatterns = [
     path('auth/email/', views.email_valid),
+    path('auth/token/', views.jwt_get),
 ]
 
 urlpatterns += [

@@ -3,9 +3,10 @@ import string, random
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework_jwt.settings import api_settings
 
 from users.models import CustomUser
-from .serializers import CustomUserSerializer
+from users.serializers import CustomUserSerializer
 
 @api_view(('GET',))
 def email_valid(request):
@@ -27,3 +28,21 @@ def email_valid(request):
         serializer = CustomUserSerializer(CustomUser.objects.get(email=email))
         return Response(serializer.data)
     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+def jwt_get(request):
+    email = request.GET.get('email')
+    confirmation_code = request.GET.get('confirmation_code')
+
+    jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+    jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+    usr = CustomUser.objects.filter(email=email, confirmation_code=confirmation_code)
+
+    if usr.count() == 1:
+        payload = jwt_payload_handler(usr)
+        token = jwt_encode_handler(payload)
+        usr.token = token
+        serializer = CustomUserSerializer(usr)
+        return (serializer.data)
+
+
+
