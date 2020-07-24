@@ -6,7 +6,6 @@ from rest_framework_simplejwt.views import (
 
 from . import views
 
-
 urlpatterns = [
     path('auth/email/', views.email_valid),
 ]

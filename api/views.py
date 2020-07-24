@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 
 from users.models import CustomUser
+from .serializers import CustomUserSerializer
 
 @api_view(('GET',))
 def email_valid(request):
@@ -23,5 +24,6 @@ def email_valid(request):
             [f'{email}'],  # Это поле "Кому" (можно указать список адресов)
             fail_silently=False,  # Сообщать об ошибках
         )
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = CustomUserSerializer(CustomUser.objects.get(email=email))
+        return Response(serializer.data)
     return Response(status=status.HTTP_400_BAD_REQUEST)
