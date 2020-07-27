@@ -4,11 +4,11 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     )
 
-from .views import EmailvalidView
+from .views import EmailvalidView, JwtGetView
 
 urlpatterns = [
     path('auth/email/', EmailvalidView.as_view()),
-    # path('auth/token/', views.jwt_get),
+    path('auth/token/', JwtGetView.as_view()),
 ]
 
 urlpatterns += [

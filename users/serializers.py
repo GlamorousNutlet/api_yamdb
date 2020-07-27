@@ -9,10 +9,3 @@ class EmailSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('email',)
         model = CustomUser
-
-#
-# class JwtSerializer(serializers.ModelSerializer):
-#     token = serializers.CharField(max_length=255, read_only=True)
-#
-#     class Meta:
-#
