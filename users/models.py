@@ -6,3 +6,8 @@ class CustomUser(AbstractUser):
     bio = models.TextField(max_length=500, blank=True)
     role = models.CharField(max_length=30, blank=True)
     confirmation_code = models.CharField(max_length=10, blank=True)
+    token = models.CharField(max_length=30, blank=True)
+    username = models.CharField(max_length=30, unique=True)
+
+    # USERNAME_FIELD = 'email'
+
