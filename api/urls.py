@@ -3,12 +3,20 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
     )
+from rest_framework.routers import DefaultRouter
 
-from .views import EmailvalidView, JwtGetView
+from .views import EmailValidView, JwtGetView, PatchUserView
 
-urlpatterns = [
-    path('auth/email/', EmailvalidView.as_view()),
+custom_user_router = DefaultRouter()
+
+custom_user_router.register(r'users/<username>/', PatchUserView, basename='customuser')
+
+urlpatterns = custom_user_router.urls
+
+urlpatterns += [
+    path('auth/email/', EmailValidView.as_view()),
     path('auth/token/', JwtGetView.as_view()),
+    # path('users/<username>/', PatchUserView.as_view())
 ]
 
 urlpatterns += [
@@ -17,3 +25,4 @@ urlpatterns += [
     path('api/v1/token/refresh/',
          TokenRefreshView.as_view(), name='token_refresh'),
 ]
+
