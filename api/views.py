@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import viewsets, permissions, status
 
 from users.models import CustomUser
+from .permissions import CustomPermission
 from users.serializers import EmailSerializer, CustomUserSerializers
 
 
@@ -75,7 +76,7 @@ class PatchUserView(viewsets.ModelViewSet):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+                            status=status.HTTP_403_FORBIDDEN)
         return Response(f'Пользователя не существует', status=status.HTTP_400_BAD_REQUEST)
 
 
