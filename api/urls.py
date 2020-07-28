@@ -9,7 +9,7 @@ from .views import EmailValidView, JwtGetView, PatchUserView
 
 custom_user_router = DefaultRouter()
 
-custom_user_router.register(r'users/<username>/', PatchUserView, basename='customuser')
+custom_user_router.register(r'users', PatchUserView, basename='customuser')
 
 urlpatterns = custom_user_router.urls
 

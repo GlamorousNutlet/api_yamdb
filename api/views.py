@@ -1,13 +1,11 @@
-from django.core.mail import send_mail
 import string, random
+from django.core.mail import send_mail
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework_jwt.settings import api_settings
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import viewsets, permissions
-from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, permissions, status
 
 from users.models import CustomUser
 from users.serializers import EmailSerializer, CustomUserSerializers
@@ -40,7 +38,7 @@ class EmailValidView(APIView):
 class JwtGetView(APIView):
     permission_classes = [AllowAny]
 
-    def post(self, request):
+    def post(self):
         email = self.request.data.get('email')
         confirmation_code = self.request.data.get('confirmation_code')
 
@@ -62,22 +60,23 @@ class JwtGetView(APIView):
 class PatchUserView(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializers
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAdminUser,)
+    lookup_field = "username"
 
-
-    def update(self, request, *args, **kwargs):
+    def update(self, *args, **kwargs):
         try:
-            usr = CustomUser.objects.get(username=username)
+            usr = CustomUser.objects.get(username=self.kwargs.get('username'))
         except ObjectDoesNotExist:
             return Response(f'Пользователя не существует', status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = CustomUserSerializers(usr, data=request.data, partial = True)
-        if request.user.username == usr.username:
+        serializer = CustomUserSerializers(usr, data=self.request.data, partial = True)
+        if self.request.user.username == usr.username:
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+        return Response(f'Пользователя не существует', status=status.HTTP_400_BAD_REQUEST)
 
 
 
