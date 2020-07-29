@@ -4,16 +4,15 @@ from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
     your_role = (
-        ('user', 'Аутентифицированный пользователь'),
-        ('moderator', 'Модератор '),
-        ('admin', 'Администратор '),
-        ('django_adm', 'Администратор Django')
+        ('user', 'user'),
+        ('moderator', 'moderator '),
+        ('admin', 'admin '),
+        ('django_adm', 'django_adm'),
+        ('AnonymousUser', 'AnonymousUser')
     )
     bio = models.TextField(max_length=500, blank=True)
     role = models.CharField(max_length=500, choices=your_role, default='user')
     confirmation_code = models.CharField(max_length=10, blank=True)
     token = models.CharField(max_length=30, blank=True)
     username = models.CharField(max_length=30, unique=True)
-
-    # USERNAME_FIELD = 'email'
-
+    email = models.EmailField(unique=True)
