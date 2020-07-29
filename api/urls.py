@@ -16,7 +16,6 @@ urlpatterns = custom_user_router.urls
 urlpatterns += [
     path('auth/email/', EmailValidView.as_view()),
     path('auth/token/', JwtGetView.as_view()),
-    # path('users/<username>/', PatchUserView.as_view())
 ]
 
 urlpatterns += [
