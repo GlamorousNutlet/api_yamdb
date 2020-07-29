@@ -9,6 +9,7 @@ class EmailSerializer(serializers.ModelSerializer):
         fields = ('email',)
         model = CustomUser
 
+
 class CustomUserSerializers(serializers.ModelSerializer):
 
     class Meta:

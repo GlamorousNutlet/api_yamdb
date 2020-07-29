@@ -1,4 +1,5 @@
-import string, random
+import string
+import random
 from django.core.mail import send_mail
 from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
@@ -9,6 +10,9 @@ from rest_framework import viewsets, status
 
 from users.models import CustomUser
 from .permissions import CustomPermission
+from .models import *
+from .serializers import *
+
 from users.serializers import EmailSerializer, CustomUserSerializers
 
 
@@ -45,6 +49,7 @@ class JwtGetView(APIView):
 
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
         try:
             usr = CustomUser.objects.get(email=email, confirmation_code=confirmation_code)
         except ObjectDoesNotExist:
@@ -70,15 +75,14 @@ class PatchUserView(viewsets.ModelViewSet):
         except ObjectDoesNotExist:
             return Response(f'Пользователя не существует', status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = CustomUserSerializers(usr, data=self.request.data, partial = True)
+        serializer = CustomUserSerializers(usr, data=self.request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-
-
+class CategoryView(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer

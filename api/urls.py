@@ -5,13 +5,13 @@ from rest_framework_simplejwt.views import (
     )
 from rest_framework.routers import DefaultRouter
 
-from .views import EmailValidView, JwtGetView, PatchUserView
+from .views import *
 
-custom_user_router = DefaultRouter()
+api_router = DefaultRouter()
+api_router.register(r'users', PatchUserView, basename='customuser')
+api_router.register(r'categories', CategoryView, basename='categories')
 
-custom_user_router.register(r'users', PatchUserView, basename='customuser')
-
-urlpatterns = custom_user_router.urls
+urlpatterns = api_router.urls
 
 urlpatterns += [
     path('auth/email/', EmailValidView.as_view()),
@@ -19,9 +19,9 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    path('api/v1/token/',
+    path('token/',
          TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/v1/token/refresh/',
+    path('token/refresh/',
          TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
