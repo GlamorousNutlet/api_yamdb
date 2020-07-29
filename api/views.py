@@ -5,7 +5,8 @@ from rest_framework_jwt.settings import api_settings
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import viewsets, status
+from rest_framework import viewsets, permissions, status
+from django.shortcuts import get_object_or_404
 
 from users.models import CustomUser
 from .permissions import CustomPermission
@@ -58,7 +59,16 @@ class JwtGetView(APIView):
             return Response(user_details, status=status.HTTP_200_OK)
 
 
-class PatchUserView(viewsets.ModelViewSet):
+class MeView(viewsets.ModelViewSet):
+    serializer_class = CustomUserSerializers
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = CustomUser.objects.filter(email=self.request.user.email)
+        return queryset
+
+
+class UsernameView(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializers
     permission_classes = (CustomPermission,)
@@ -76,6 +86,11 @@ class PatchUserView(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
 
 
 

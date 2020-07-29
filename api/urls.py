@@ -5,13 +5,16 @@ from rest_framework_simplejwt.views import (
     )
 from rest_framework.routers import DefaultRouter
 
-from .views import EmailValidView, JwtGetView, PatchUserView
+from .views import EmailValidView, JwtGetView, UsernameView, MeView
 
 custom_user_router = DefaultRouter()
+me_router = DefaultRouter()
 
-custom_user_router.register(r'users', PatchUserView, basename='customuser')
+custom_user_router.register(r'users', UsernameView, basename='customuser')
+me_router.register(r'users/me', MeView, basename='meuser')
 
-urlpatterns = custom_user_router.urls
+urlpatterns = me_router.urls
+urlpatterns += custom_user_router.urls
 
 urlpatterns += [
     path('auth/email/', EmailValidView.as_view()),
