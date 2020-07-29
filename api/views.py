@@ -61,7 +61,7 @@ class JwtGetView(APIView):
 class PatchUserView(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializers
-    permission_classes = (permissions.IsAdminUser,)
+    permission_classes = (CustomPermission,)
     lookup_field = "username"
 
     def update(self, *args, **kwargs):
@@ -71,13 +71,13 @@ class PatchUserView(viewsets.ModelViewSet):
             return Response(f'Пользователя не существует', status=status.HTTP_400_BAD_REQUEST)
 
         serializer = CustomUserSerializers(usr, data=self.request.data, partial = True)
-        if self.request.user.username == usr.username:
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(serializer.errors,
-                            status=status.HTTP_403_FORBIDDEN)
-        return Response(f'Пользователя не существует', status=status.HTTP_400_BAD_REQUEST)
+        # if self.request.user.username == usr.username:
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+        # return Response(f'Пользователя не существует', status=status.HTTP_400_BAD_REQUEST)
 
 
 

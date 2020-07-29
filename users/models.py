@@ -4,11 +4,11 @@ from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
     your_role = (
-        ('user', 'Аутентифицированный пользователь'),
-        ('moderator', 'Модератор '),
-        ('admin', 'Администратор '),
-        ('django_adm', 'Администратор Django'),
-        ('AnonymousUser', 'Неизвестный')
+        ('user', 'user'),
+        ('moderator', 'moderator '),
+        ('admin', 'admin '),
+        ('django_adm', 'django_adm'),
+        ('AnonymousUser', 'AnonymousUser')
     )
     bio = models.TextField(max_length=500, blank=True)
     role = models.CharField(max_length=500, choices=your_role, default='user')
