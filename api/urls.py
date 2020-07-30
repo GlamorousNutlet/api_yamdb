@@ -12,8 +12,10 @@ api_router.register(r'users', PatchUserView, basename='customuser')
 api_router.register(r'categories', CategoryViewSet, basename='categories')
 api_router.register(r'genres', GenreViewSet, basename='categories')
 api_router.register(r'titles', TitleViewSet, basename='categories')
-api_router.register(r'review', ReviewViewSet, basename='categories')
-api_router.register(r'comment', CommentViewSet, basename='categories')
+api_router.register(r'titles/(?P<title_id>\d+)/reviews', ReviewViewSet, basename='reviews')
+api_router.register(r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments', CommentViewSet, basename='comments')
+
+# router_v1.register(r'posts/(?P<post_id>\d+)/comments', CommentViewSet, basename='comment')
 
 
 urlpatterns = api_router.urls

@@ -23,7 +23,7 @@ class TitleSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = '__all__'
+        fields = ['id', 'title', 'author', 'text', 'score', 'pub_date']
         model = Review
 
 

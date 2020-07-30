@@ -83,11 +83,10 @@ class PatchUserView(viewsets.ModelViewSet):
                         status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [CustomPermission, ]
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -98,13 +97,21 @@ class GenreViewSet(viewsets.ModelViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
+    permission_classes = [CustomPermission, ]
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
+    def get_queryset(self):
+        """Filter comments by post"""
+        return self.queryset.filter(title_id=self.kwargs.get('title_id'))
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        """Filter comments by post"""
+        return self.queryset.filter(title_id=self.kwargs.get('title_id'), review_id=self.kwargs.get('review_id'))
