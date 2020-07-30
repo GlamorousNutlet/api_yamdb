@@ -7,13 +7,17 @@ from rest_framework.routers import DefaultRouter
 
 from .views import EmailValidView, JwtGetView, UsernameView, MeView
 
+urlpatterns = [
+    path('users/me/', MeView.as_view({
+                                      'get' : 'list',
+                                      'patch' : 'update'
+                                      })),
+]
+
 custom_user_router = DefaultRouter()
-me_router = DefaultRouter()
 
 custom_user_router.register(r'users', UsernameView, basename='customuser')
-me_router.register(r'users/me', MeView, basename='meuser')
 
-urlpatterns = me_router.urls
 urlpatterns += custom_user_router.urls
 
 urlpatterns += [
@@ -27,4 +31,3 @@ urlpatterns += [
     path('api/v1/token/refresh/',
          TokenRefreshView.as_view(), name='token_refresh'),
 ]
-
