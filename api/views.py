@@ -9,9 +9,9 @@ from rest_framework import viewsets, permissions, status
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 
-from users.models import CustomUser
+from .models import CustomUser
 from .permissions import CustomPermission
-from users.serializers import EmailSerializer, CustomUserSerializers
+from .serializers import EmailSerializer, CustomUserSerializers
 
 
 class EmailValidView(APIView):

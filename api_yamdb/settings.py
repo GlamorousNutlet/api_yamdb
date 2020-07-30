@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api',
-    'users',
 ]
 
 MIDDLEWARE = [
@@ -135,7 +134,7 @@ REST_FRAMEWORK = {
         'PAGE_SIZE': 10
 }
 
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'api.CustomUser'
 
 #  подключаем движок filebased.EmailBackend
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
