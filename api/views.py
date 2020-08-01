@@ -1,4 +1,5 @@
-import string, random
+import string
+import random
 from django.core.mail import send_mail
 from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
@@ -10,7 +11,8 @@ from rest_framework.decorators import action
 
 from .models import CustomUser
 from .permissions import CustomPermission
-from .serializers import EmailSerializer, CustomUserSerializers
+from .models import *
+from .serializers import *
 
 
 class EmailValidView(APIView):
@@ -46,6 +48,7 @@ class JwtGetView(APIView):
 
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
         try:
             usr = CustomUser.objects.get(email=email, confirmation_code=confirmation_code)
         except ObjectDoesNotExist:
@@ -97,3 +100,38 @@ class UsernameView(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors,
                         status=status.HTTP_400_BAD_REQUEST)
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [CustomPermission, ]
+
+
+class GenreViewSet(viewsets.ModelViewSet):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    queryset = Title.objects.all()
+    serializer_class = TitleSerializer
+    permission_classes = [CustomPermission, ]
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        """Filter comments by post"""
+        return self.queryset.filter(title_id=self.kwargs.get('title_id'))
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        """Filter comments by post"""
+        return self.queryset.filter(title_id=self.kwargs.get('title_id'), review_id=self.kwargs.get('review_id'))

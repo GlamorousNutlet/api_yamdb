@@ -22,3 +22,33 @@ class CustomUserSerializers(serializers.ModelSerializer):
             'role'
         )
         model = CustomUser
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Category
+
+
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Genre
+
+
+class TitleSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Title
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ['id', 'title', 'author', 'text', 'score', 'pub_date']
+        model = Review
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Comment
