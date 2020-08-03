@@ -38,8 +38,8 @@ class Title(models.Model):
 
 
 class Review(models.Model):
-    title = models.ForeignKey(Title, on_delete=models.CASCADE, blank=True, null=True)
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
+    title = models.ForeignKey(Title, on_delete=models.CASCADE)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     text = models.TextField()
     score = models.IntegerField()
     pub_date = models.DateTimeField("Дата публикации",

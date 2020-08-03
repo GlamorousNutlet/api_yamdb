@@ -129,22 +129,26 @@ class ReviewViewSet(viewsets.ModelViewSet):
         """Filter comments by post"""
         return self.queryset.filter(title_id=self.kwargs.get('title_id'))
 
-    def perform_create(self, serializer):
-        # title = Title.objects.get(pk=self.kwargs.get('title_id'))
-        # serializer.save(title=title)
-        try:
-            title = Title.objects.get(pk=self.kwargs.get('title_id'))
-            serializer.save(title=title)
-        except ObjectDoesNotExist:
-            return Response('Произведения не существует', status=status.HTTP_404_NOT_FOUND)
+    def create(self, request, *args, **kwargs):
+        # title = Title.objects.get(pk=kwargs.get('title_id'))
+        serializer = ReviewSerializer(data=request.data, partial=True)
+        score = request.data.get('score')
+        if serializer.is_valid():
+            if type(score) == int:
+                serializer.save(title=Title.objects.get(pk=kwargs.get('title_id')), author=request.user, score=request.data.get('score'))
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors,
+                                status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
 
-
-# class CommentViewSet(viewsets.ModelViewSet):
-#     queryset = Comment.objects.all()
-#     serializer_class = CommentSerializer
-#
-#     def get_queryset(self):
-#         """Filter comments by post"""
-#         return self.queryset.filter(title_id=self.kwargs.get('title_id'), review_id=self.kwargs.get('review_id'))
+    def get_queryset(self):
+        """Filter comments by post"""
+        return self.queryset.filter(title_id=self.kwargs.get('title_id'), review_id=self.kwargs.get('review_id'))
