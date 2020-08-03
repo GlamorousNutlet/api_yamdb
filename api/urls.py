@@ -13,15 +13,15 @@ api_router.register(r'titles', TitleViewSet, basename='categories')
 api_router.register(r'titles/(?P<title_id>\d+)/reviews', ReviewViewSet, basename='reviews')
 api_router.register(r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments', CommentViewSet, basename='comments')
 
-
-urlpatterns = api_router.urls
-
-urlpatterns += [
+urlpatterns = [
     path('users/me/', MeView.as_view({
-        'get': 'list',
-        'patch': 'update'
-    })),
+                                      'get' : 'list',
+                                      'patch' : 'update'
+                                      })),
 ]
+
+urlpatterns += api_router.urls
+
 urlpatterns += [
     path('auth/email/', EmailValidView.as_view()),
     path('auth/token/', JwtGetView.as_view()),
