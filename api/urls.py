@@ -11,7 +11,7 @@ api_router.register(r'categories', CategoryViewSet, basename='categories')
 api_router.register(r'genres', GenreViewSet, basename='categories')
 api_router.register(r'titles', TitleViewSet, basename='categories')
 api_router.register(r'titles/(?P<title_id>\d+)/reviews', ReviewViewSet, basename='reviews')
-api_router.register(r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments', CommentViewSet, basename='comments')
+# api_router.register(r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments', CommentViewSet, basename='comments')
 
 urlpatterns = [
     path('users/me/', MeView.as_view({

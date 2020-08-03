@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 
 from .models import CustomUser
 from .permissions import CustomPermission
@@ -122,16 +123,28 @@ class TitleViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
         """Filter comments by post"""
         return self.queryset.filter(title_id=self.kwargs.get('title_id'))
 
+    def perform_create(self, serializer):
+        # title = Title.objects.get(pk=self.kwargs.get('title_id'))
+        # serializer.save(title=title)
+        try:
+            title = Title.objects.get(pk=self.kwargs.get('title_id'))
+            serializer.save(title=title)
+        except ObjectDoesNotExist:
+            return Response('Произведения не существует', status=status.HTTP_404_NOT_FOUND)
 
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
 
-    def get_queryset(self):
-        """Filter comments by post"""
-        return self.queryset.filter(title_id=self.kwargs.get('title_id'), review_id=self.kwargs.get('review_id'))
+
+
+# class CommentViewSet(viewsets.ModelViewSet):
+#     queryset = Comment.objects.all()
+#     serializer_class = CommentSerializer
+#
+#     def get_queryset(self):
+#         """Filter comments by post"""
+#         return self.queryset.filter(title_id=self.kwargs.get('title_id'), review_id=self.kwargs.get('review_id'))
