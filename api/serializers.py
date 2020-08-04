@@ -43,8 +43,11 @@ class TitleSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    text = serializers.JSONField()
+    author = serializers.CharField(source='author.username', read_only=True)
+
     class Meta:
-        fields = ['id', 'title', 'author', 'text', 'score', 'pub_date']
+        fields = ['id', 'title', 'author', 'text', 'score', 'pub_date', ]
         model = Review
 
 

@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
+from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 
 from .models import CustomUser
@@ -121,25 +122,32 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
-        """Filter comments by post"""
-        return self.queryset.filter(title_id=self.kwargs.get('title_id'))
+        queryset = Review.objects.filter(title=Title.objects.get(pk=self.kwargs.get('title_id')))
+        return queryset
 
     def create(self, request, *args, **kwargs):
-        # title = Title.objects.get(pk=kwargs.get('title_id'))
-        serializer = ReviewSerializer(data=request.data, partial=True)
-        score = request.data.get('score')
-        if serializer.is_valid():
-            if type(score) == int:
-                serializer.save(title=Title.objects.get(pk=kwargs.get('title_id')), author=request.user, score=request.data.get('score'))
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                return Response(serializer.errors,
-                                status=status.HTTP_400_BAD_REQUEST)
+        try:
+            Title.objects.get(pk=kwargs.get('title_id'))
+        except ObjectDoesNotExist:
+            return Response(f'Такого произведения не существует', status=status.HTTP_404_NOT_FOUND)
+
+        data = dict(request.data)
+        title = Title.objects.get(pk=kwargs.get('title_id'))
+        usr = CustomUser.objects.get(pk=request.user.pk)
+        data['title'] = kwargs.get('title_id')
+        data['author'] = usr
+        if 'score' in data:
+            data['score'] = data['score'][0]
+        if 'text' in data:
+            data['text'] = data['text'][0]
+        serializer = ReviewSerializer(data=data)
+        if serializer.is_valid() and Review.objects.filter(title=title, author=usr).count() == 0:
+            serializer.save(author=usr)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
